@@ -25,6 +25,7 @@ fn float_axis_labels(x_min: f64, x_max: f64, _available_space: i64) -> String {
         nr_labels: 0,
         labels: [0.0; MAX_LABELS]
     };
+
     let mut q: f64;
     let mut step_size: f64;
     for exponent in [base_exponent, base_exponent-1] {
