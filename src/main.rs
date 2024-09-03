@@ -35,13 +35,14 @@ fn float_axis_labels(x_min: f64, x_max: f64, _available_space: i64) -> String {
 
         // j is the "skip amount"
         for j in 1..(MAX_SKIP_AMOUNT + 1) {
-            // i is the index of the currently selected "nice" number q
-            // for i, q in enumerate(Q_VALUES):
+            // i is the index of the currently selected "nice" number q for i, q in
+            // enumerate(Q_VALUES):
             for i in 0..(Q_VALUES.len()) {
                 q = Q_VALUES[i];
                 step_size = q * (j as f64) * 10_f64.powf(exponent as f64);
                 let labels = linspace(label_start, x_max, step_size);
                 if labels.len() < 2 {
+                    // A single label is not meaningful
                     continue;
                 }
                 println!("DEBUG: Checking labels {:?} ...", labels);
