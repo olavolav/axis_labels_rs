@@ -6,28 +6,19 @@ fn main() {
     println!("{}", float_axis_labels(min, max, 60));
 }
 
-const MAX_LABELS: usize = 100;
-struct FloatLabelSet {
-    nr_labels: i64,
-    labels: [f64; MAX_LABELS],
-}
-
 const MAX_SKIP_AMOUNT: i32 = 9;
 const Q_VALUES: [f64; 6] = [1.0, 5.0, 2.0, 2.5, 4.0, 3.0];
+const WEIGHTS: [f64; 4] = [0.4, 0.25, 0.3, 0.2];
 
 fn float_axis_labels(x_min: f64, x_max: f64, available_space: i64) -> String {
     let data_range = x_max - x_min;
     let base_exponent = data_range.log10() as i64;
     println!("DEBUG: base_exponent = {base_exponent}");
-    let preferred_nr_labels = compute_preferred_number_of_labels(available_space, true);
+    let preferred_nr_labels = compute_preferred_number_of_labels(available_space, false);
     println!("DEBUG: preferred_nr_labels = {preferred_nr_labels}");
 
     let mut best_score = -0.2;
-    let mut best_result = FloatLabelSet {
-        nr_labels: 0,
-        labels: [0.0; MAX_LABELS],
-    };
-
+    let mut best_labels: Vec<f64> = vec![];
     let mut q: f64;
     let mut step_size: f64;
     for exponent in [base_exponent, base_exponent - 1] {
@@ -54,10 +45,25 @@ fn float_axis_labels(x_min: f64, x_max: f64, available_space: i64) -> String {
                 let simplicity = compute_simplicity_score(&labels, i, j);
                 let coverage = compute_coverage_score(&labels, x_min, x_max);
                 let density = compute_density_score(&labels, preferred_nr_labels);
-                println!("-> simplicity = {simplicity}, coverage = {coverage}, density = {density}");
+                // println!(
+                //     "-> simplicity = {simplicity}, coverage = {coverage}, density = {density}"
+                // );
+                let score_upper_bound = simplicity * WEIGHTS[0]
+                    + coverage * WEIGHTS[1]
+                    + density * WEIGHTS[2]
+                    + 1.0 * WEIGHTS[3];
+                // println!("-> score_upper_bound = {score_upper_bound}");
+                if (best_labels.len() > 0) && (score_upper_bound < best_score) {
+                    continue;
+                }
+                // TODO check overlap etc.
+                println!("Found best label set! 😀");
+                best_labels = labels.clone();
+                best_score = score_upper_bound;
             }
         }
     }
+    println!("-> Best solution: {:?}", best_labels);
 
     return String::from("   ");
 }
@@ -98,11 +104,11 @@ fn compute_coverage_score(labels: &Vec<f64>, x_min: f64, x_max: f64) -> f64 {
     if labels.len() < 2 {
         return 0.0;
     }
+    // Here we can safely unwrap
+    let l0 = labels.first().unwrap();
+    let l1 = labels.last().unwrap();
     return 1.0
-        - 5.0
-            * ((x_max - labels.last().unwrap()).powf(2.0)
-                + (x_min - labels.first().unwrap()).powf(2.0))
-            / ((x_max - x_min).powf(2.0));
+        - 5.0 * ((x_max - l1).powf(2.0) + (x_min - l0).powf(2.0)) / ((x_max - x_min).powf(2.0));
 }
 
 /// Density score according to Talbot.
