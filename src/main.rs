@@ -8,11 +8,9 @@ fn main() {
 
 const MAX_SKIP_AMOUNT: i32 = 9;
 const Q_VALUES: [f64; 6] = [1.0, 5.0, 2.0, 2.5, 4.0, 3.0];
-const WEIGHTS: [f64; 4] = [0.4, 0.25, 0.3, 0.2];
 
 fn float_axis_labels(x_min: f64, x_max: f64, available_space: i64) -> String {
-    let data_range = x_max - x_min;
-    let base_exponent = data_range.log10() as i64;
+    let base_exponent = (x_max - x_min).log10() as i64;
     println!("DEBUG: base_exponent = {base_exponent}");
     let preferred_nr_labels = compute_preferred_number_of_labels(available_space, false);
     println!("DEBUG: preferred_nr_labels = {preferred_nr_labels}");
@@ -48,10 +46,7 @@ fn float_axis_labels(x_min: f64, x_max: f64, available_space: i64) -> String {
                 // println!(
                 //     "-> simplicity = {simplicity}, coverage = {coverage}, density = {density}"
                 // );
-                let score_upper_bound = simplicity * WEIGHTS[0]
-                    + coverage * WEIGHTS[1]
-                    + density * WEIGHTS[2]
-                    + 1.0 * WEIGHTS[3];
+                let score_upper_bound = overall_score(simplicity, coverage, density, 1.0);
                 // println!("-> score_upper_bound = {score_upper_bound}");
                 if (best_labels.len() > 0) && (score_upper_bound < best_score) {
                     continue;
@@ -81,6 +76,10 @@ fn linspace(zero_point: f64, min: f64, max: f64, step: f64) -> Vec<f64> {
     }
 
     return vec;
+}
+
+fn overall_score(simplicity: f64, coverage: f64, density: f64, alignment: f64) -> f64 {
+    return simplicity * 0.4 + coverage * 0.25 + density * 0.3 + alignment * 0.2;
 }
 
 /// Compute an estimate for the preferred number of labels.
