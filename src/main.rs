@@ -9,7 +9,7 @@ fn main() {
 const MAX_SKIP_AMOUNT: i32 = 9;
 const Q_VALUES: [f64; 6] = [1.0, 5.0, 2.0, 2.5, 4.0, 3.0];
 
-fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String {
+pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String {
     let base_exponent = (x_max - x_min).log10() as i64;
     println!("DEBUG: base_exponent = {base_exponent}");
     let preferred_nr_labels = compute_preferred_number_of_labels(available_space, false);
