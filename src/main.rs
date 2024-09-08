@@ -157,7 +157,12 @@ fn render(labels: &Vec<f64>, x_min: f64, x_max: f64, available_space: i32) -> (S
             continue;
         }
         // Write label string to result
-        result.replace_range((offset  as usize)..((offset+label_len) as usize), &label_str);
+        let range_for_writing = (offset as usize)..((offset+label_len) as usize);
+        if result[range_for_writing.clone()].trim().is_empty() {
+            result.replace_range(range_for_writing, &label_str);
+        } else {
+            found_overlap = true;
+        }
 
     }
 
