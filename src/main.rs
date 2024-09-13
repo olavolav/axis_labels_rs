@@ -91,6 +91,31 @@ fn linspace(zero_point: f64, min: f64, max: f64, step: f64) -> Vec<f64> {
     return vec;
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn mismatching_limits_should_yield_empty_vector() {
+        let space = linspace(0.0, 1.0, -3.0, 0.55);
+        assert_eq!(space.len(), 0);
+    }
+
+    #[test]
+    fn simple_linspace() {
+        let space = linspace(0.0, 0.9, 2.1, 1.0);
+        assert_eq!(space.len(), 2);
+        assert!((space[0] - 1.0).abs() < 1e6);
+        assert!((space[1] - 2.0).abs() < 1e6);
+    }
+
+    #[test]
+    fn linspace_should_be_numberically_stable() {
+        let space = linspace(0.0, 9_000.0, 10_000.1, 1.0);
+        assert!((space[space.len() - 1] - 10_000.0).abs() < 1e6);
+    }
+}
+
 /// Compute upper bound to full score of labels based on partial properties
 fn upper_bound_on_overall_score(simplicity: f64, coverage: f64, density: f64) -> f64 {
     return overall_score(simplicity, coverage, density, 1.0);
@@ -141,13 +166,12 @@ fn render(labels: &Vec<f64>, x_min: f64, x_max: f64, available_space: i32) -> (S
     let mut result = String::new();
     for _ in 0..available_space {
         result.push_str(" ");
-
     }
     let mut found_overlap = false;
 
     // render the individual numbers
     for label in labels {
-        let middle_index = ((available_space as f64) * (label-x_min)/(x_max-x_min)) as i32;
+        let middle_index = ((available_space as f64) * (label - x_min) / (x_max - x_min)) as i32;
         let label_str = format!("{:.2}", label);
         let label_len = label_str.len() as i32;
         let offset = middle_index - label_len;
@@ -157,13 +181,13 @@ fn render(labels: &Vec<f64>, x_min: f64, x_max: f64, available_space: i32) -> (S
             continue;
         }
         // Write label string to result
-        let range_for_writing = (offset as usize)..((offset+label_len) as usize);
+        let range_for_writing = (offset as usize)..((offset + label_len) as usize);
         if result[range_for_writing.clone()].trim().is_empty() {
             result.replace_range(range_for_writing, &label_str);
         } else {
             found_overlap = true;
         }
-
+        // TODO Set `found_overlap` to true already when there is zero spacing between labels.
     }
 
     return (result, found_overlap);
