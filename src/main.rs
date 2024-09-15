@@ -1,3 +1,4 @@
+mod renderer;
 mod utils;
 
 fn main() {
@@ -57,7 +58,8 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
 
                 // We may have found a new best label set, depending on the last score, which is
                 // `grid_alignment`.
-                let (result, grid_overlap) = render(&best_labels, x_min, x_max, available_space);
+                let (result, grid_overlap) =
+                    crate::renderer::render(&best_labels, x_min, x_max, available_space);
                 // TODO Full alignment score incliding regularity
                 let grid_alignment = 1.0 - ((grid_overlap as i32) as f64);
                 let score = overall_score(simplicity, coverage, density, grid_alignment);
@@ -121,36 +123,4 @@ fn compute_density_score(labels: &Vec<f64>, preferred_nr: i32) -> f64 {
     let n = labels.len() as f64;
     let p = preferred_nr as f64;
     return 1.0 - f64::max(n / p, p / n);
-}
-
-fn render(labels: &Vec<f64>, x_min: f64, x_max: f64, available_space: i32) -> (String, bool) {
-    // Initialize the empty string
-    let mut result = String::new();
-    for _ in 0..available_space {
-        result.push_str(" ");
-    }
-    let mut found_overlap = false;
-
-    // render the individual numbers
-    for label in labels {
-        let middle_index = ((available_space as f64) * (label - x_min) / (x_max - x_min)) as i32;
-        let label_str = format!("{:.2}", label);
-        let label_len = label_str.len() as i32;
-        let offset = middle_index - label_len;
-        if offset < 0 || (offset + label_len >= available_space) {
-            found_overlap = true;
-            // Does not fit, skip drawing this number
-            continue;
-        }
-        // Write label string to result
-        let range_for_writing = (offset as usize)..((offset + label_len) as usize);
-        if result[range_for_writing.clone()].trim().is_empty() {
-            result.replace_range(range_for_writing, &label_str);
-        } else {
-            found_overlap = true;
-        }
-        // TODO Set `found_overlap` to true already when there is zero spacing between labels.
-    }
-
-    return (result, found_overlap);
 }
