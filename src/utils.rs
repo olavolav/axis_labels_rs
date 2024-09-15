@@ -1,13 +1,14 @@
 pub fn linspace(zero_point: f64, min: f64, max: f64, step: f64) -> Vec<f64> {
     let mut vec: Vec<f64> = Vec::new();
+    let mut i: i64 = 0;
     let mut x = zero_point;
 
     while x < max {
         if x >= min {
-            // This accumulates numerical error, but should be fine for now.
             vec.push(x);
         }
-        x += step;
+        i += 1;
+        x = zero_point + (i as f64) * step;
     }
 
     return vec;
