@@ -13,9 +13,9 @@ const Q_VALUES: [f64; 6] = [1.0, 5.0, 2.0, 2.5, 4.0, 3.0];
 
 pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String {
     let base_exponent = (x_max - x_min).log10() as i64;
-    println!("DEBUG: base_exponent = {base_exponent}");
+    // println!("DEBUG: base_exponent = {base_exponent}");
     let preferred_nr_labels = compute_preferred_number_of_labels(available_space, false);
-    println!("DEBUG: preferred_nr_labels = {preferred_nr_labels}");
+    // println!("DEBUG: preferred_nr_labels = {preferred_nr_labels}");
 
     let mut best_score = -0.2;
     let mut best_labels: Vec<f64> = vec![];
@@ -26,7 +26,7 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
         // Find closest "zero" and thus the start of the label generation
         let f = x_min / 10_f64.powf(exponent as f64 + 1.0);
         let label_start = f.floor() * 10_f64.powf(exponent as f64 + 1.0);
-        println!("DEBUG: exponent = {exponent}, f = {f}, label_start = {label_start}");
+        // println!("DEBUG: exponent = {exponent}, f = {f}, label_start = {label_start}");
 
         // j is the "skip amount"
         for j in 1..(MAX_SKIP_AMOUNT + 1) {
@@ -41,7 +41,7 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                     // A single label is not meaningful
                     continue;
                 }
-                println!("DEBUG: Checking labels {:?} ...", labels);
+                // println!("DEBUG: Checking labels {:?} ...", labels);
 
                 let simplicity = compute_simplicity_score(&labels, i, j);
                 let coverage = compute_coverage_score(&labels, x_min, x_max);
@@ -65,15 +65,15 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                     continue;
                 }
 
-                println!("Found best label set! 😀");
+                // println!("Found best label set! 😀");
                 best_labels = labels.clone();
                 best_score = score_upper_bound;
                 best_result = result.clone();
             }
         }
     }
-    println!("-> Best labels: {:?}", best_labels);
-    println!("-> Rendered as: {best_result}");
+    // println!("-> Best labels: {:?}", best_labels);
+    // println!("-> Rendered as: {best_result}");
 
     return best_result;
 }
