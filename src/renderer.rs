@@ -12,22 +12,31 @@ pub fn render(labels: &Vec<f64>, x_min: f64, x_max: f64, available_space: i32) -
     // render the individual numbers
     for i in 0..labels.len() {
         let label = labels[i];
-        let label_len = label_strs[i].len() as i32;
+        let mut label_len = label_strs[i].len() as i32;
         let middle_index = ((available_space as f64) * (label - x_min) / (x_max - x_min)) as i32;
-        let offset = middle_index - label_len;
+        let mut offset = middle_index - label_len;
         if offset < 0 || (offset + label_len >= available_space) {
             found_overlap = true;
             // Does not fit, skip drawing this number
             continue;
         }
+        let mut expanded_label = label_strs[i].clone();
+        if offset > 0 {
+            expanded_label = String::from(" ") + &expanded_label;
+            offset -= 1;
+            label_len += 1;
+        }
+        if offset + label_len < available_space {
+            expanded_label = expanded_label + &String::from(" ");
+            label_len += 1;
+        }
         // Write label string to result
         let range_for_writing = (offset as usize)..((offset + label_len) as usize);
         if result[range_for_writing.clone()].trim().is_empty() {
-            result.replace_range(range_for_writing, &label_strs[i]);
+            result.replace_range(range_for_writing, &expanded_label);
         } else {
             found_overlap = true;
         }
-        // TODO Set `found_overlap` to true already when there is zero spacing between labels.
     }
 
     return (result, found_overlap);

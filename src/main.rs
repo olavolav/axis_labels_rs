@@ -3,10 +3,16 @@ mod utils;
 
 fn main() {
     println!("###### axis_labels_rs ######");
-    let min = 0.023;
-    let max = 122.1;
-    println!("DEBUG: min = {min}, max = {max}");
-    println!("{}", float_axis_labels(min, max, 60));
+    let min = 6.5;
+    let mut max = 7.5;
+    let nr_runs = 150;
+    let space = 60;
+
+    for _ in 0..nr_runs {
+        max *= 1.05;
+        // println!("DEBUG: min = {min}, max = {max}");
+        println!("{}", float_axis_labels(min, max, space));
+    }
 }
 
 const MAX_SKIP_AMOUNT: i32 = 9;
@@ -18,7 +24,7 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
     let preferred_nr_labels = compute_preferred_number_of_labels(available_space, false);
     // println!("DEBUG: preferred_nr_labels = {preferred_nr_labels}");
 
-    let mut best_score = -0.2;
+    let mut best_score = -2.0;
     let mut best_labels: Vec<f64> = vec![];
     let mut best_result = String::new();
     let mut q: f64;
