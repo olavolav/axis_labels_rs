@@ -64,7 +64,26 @@ fn find_shortest_string_representation(labels: &Vec<f64>) -> Vec<String> {
 }
 
 fn format_float(x: f64, nr_digits: usize) -> String {
-    return format!("{0:.1$}", x, nr_digits);
+    let raw_number_str = format!("{0:.1$}", x, nr_digits);
+
+    // Add thousands separator
+    let parts = raw_number_str.split(".").collect::<Vec<&str>>();
+    let integer_part = parts[0];
+    let integer_part_with_separators = integer_part
+        .to_string()
+        .as_bytes()
+        .rchunks(3)
+        .rev()
+        .map(std::str::from_utf8)
+        .collect::<Result<Vec<&str>, _>>()
+        .unwrap()
+        .join(",");
+
+    if parts.len() < 2 {
+        return integer_part_with_separators;
+    }
+    let fractional_part = parts[1];
+    return integer_part_with_separators + "." + fractional_part;
 }
 
 fn vec_unique(vector: &Vec<String>) -> bool {
@@ -118,10 +137,9 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn should_render_thousand_separator() {
-        let x = 12345.6789;
+        let x = 1234567.0;
         let str = format_float(x, 0);
-        assert_eq!(str, "12,345");
+        assert_eq!(str, "1,234,567");
     }
 }
