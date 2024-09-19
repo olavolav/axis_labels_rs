@@ -63,6 +63,19 @@ fn find_shortest_string_representation(labels: &Vec<f64>) -> Vec<String> {
     return str_labels;
 }
 
+fn format_float(x: f64, nr_digits: usize) -> String {
+    return format!("{0:.1$}", x, nr_digits);
+}
+
+fn vec_unique(vector: &Vec<String>) -> bool {
+    if vector.len() == 0 {
+        return true;
+    }
+    let mut copy = vector.clone();
+    copy.dedup();
+    return vector.len() == copy.len();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -96,17 +109,19 @@ mod tests {
         assert_eq!(ls[1], "2");
         assert_eq!(ls[2], "3");
     }
-}
 
-fn format_float(x: f64, nr_digits: usize) -> String {
-    return format!("{0:.1$}", x, nr_digits);
-}
-
-fn vec_unique(vector: &Vec<String>) -> bool {
-    if vector.len() == 0 {
-        return true;
+    #[test]
+    fn should_render_float_to_specified_number_of_digits() {
+        let x = 12.0;
+        let str = format_float(x, 3);
+        assert_eq!(str, "12.000");
     }
-    let mut copy = vector.clone();
-    copy.dedup();
-    return vector.len() == copy.len();
+
+    #[test]
+    #[ignore]
+    fn should_render_thousand_separator() {
+        let x = 12345.6789;
+        let str = format_float(x, 0);
+        assert_eq!(str, "12,345");
+    }
 }
