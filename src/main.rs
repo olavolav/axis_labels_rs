@@ -3,7 +3,6 @@ mod scoring;
 mod utils;
 
 fn main() {
-    println!("###### axis_labels_rs ######");
     let min = 6.5;
     let mut max = 7.5;
     let nr_runs = 150;
@@ -11,7 +10,6 @@ fn main() {
 
     for _ in 0..nr_runs {
         max *= 1.05;
-        // println!("DEBUG: min = {min}, max = {max}");
         println!("{}", float_axis_labels(min, max, space));
     }
 }
@@ -50,7 +48,7 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                     // A single label is not meaningful
                     continue;
                 }
-                // println!("DEBUG: Checking labels {:?} ...", labels);
+                // println!("\nDEBUG: Checking labels {:?} ...", labels);
 
                 let simplicity =
                     crate::scoring::compute_simplicity_score(&labels, i, j, Q_VALUES.len());
@@ -58,7 +56,7 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                 let density = crate::scoring::compute_density_score(&labels, preferred_nr_labels);
                 // println!(
                 //     "-> simplicity = {simplicity}, coverage = {coverage}, density = {density}"
-                // );
+                //  );
                 let score_upper_bound =
                     crate::scoring::upper_bound_on_overall_score(simplicity, coverage, density);
                 // println!("-> score_upper_bound = {score_upper_bound}");
@@ -69,19 +67,18 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                 // We may have found a new best label set, depending on the last score, which is
                 // `grid_alignment`.
                 let (result, grid_overlap) =
-                    crate::rendering::render(&best_labels, x_min, x_max, available_space);
+                    crate::rendering::render(&labels, x_min, x_max, available_space);
                 // TODO Full alignment score incliding regularity
                 let grid_alignment = 1.0 - ((grid_overlap as i32) as f64);
                 let score =
                     crate::scoring::overall_score(simplicity, coverage, density, grid_alignment);
-                if score < best_score {
-                    continue;
+                // println!("-> score = {score}");
+                if score > best_score {
+                    best_labels = labels;
+                    best_score = score;
+                    best_result = result;
+                    // println!("Found best label set! 😀 New favorite: {:?}", best_result);
                 }
-
-                // println!("Found best label set! 😀");
-                best_labels = labels.clone();
-                best_score = score_upper_bound;
-                best_result = result.clone();
             }
         }
     }
