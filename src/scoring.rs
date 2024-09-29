@@ -48,6 +48,20 @@ mod tests {
     use super::*;
 
     #[test]
+    fn coverage_score_of_full_cover_labels_should_be_one() {
+        let labels = vec![1.0, 2.0, 3.0];
+        let score = compute_coverage_score(&labels, 1.0, 3.0);
+        assert!((score - 1.0).abs() < 1e-6);
+    }
+
+    #[test]
+    fn coverage_score_of_partial_cover_labels_should_be_less_than_one() {
+        let labels = vec![1.0, 2.0, 3.0];
+        let score = compute_coverage_score(&labels, -1.0, 5.5);
+        assert!(score < 0.9);
+    }
+
+    #[test]
     fn desity_score_of_preferred_count_should_be_one() {
         let labels = vec![1.0, 2.0, 3.0];
         let score = compute_density_score(&labels, 3);
