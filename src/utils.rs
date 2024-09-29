@@ -28,21 +28,21 @@ mod tests {
     fn simple_linspace() {
         let space = linspace(0.0, 0.9, 2.1, 1.0);
         assert_eq!(space.len(), 2);
-        assert!((space[0] - 1.0).abs() < 1e6);
-        assert!((space[1] - 2.0).abs() < 1e6);
+        assert!((space[0] - 1.0).abs() < 1e-6);
+        assert!((space[1] - 2.0).abs() < 1e-6);
     }
 
     #[test]
     fn simple_linspace_with_a_bit_of_offset() {
         let space = linspace(0.5, 0.9, 2.9, 1.0);
         assert_eq!(space.len(), 2);
-        assert!((space[0] - 1.5).abs() < 1e6);
-        assert!((space[1] - 2.5).abs() < 1e6);
+        assert!((space[0] - 1.5).abs() < 1e-6);
+        assert!((space[1] - 2.5).abs() < 1e-6);
     }
 
     #[test]
     fn linspace_should_be_numberically_stable() {
         let space = linspace(0.0, 9_000.0, 10_000.1, 1.0);
-        assert!((space[space.len() - 1] - 10_000.0).abs() < 1e6);
+        assert!((space[space.len() - 1] - 10_000.0).abs() < 1e-6);
     }
 }

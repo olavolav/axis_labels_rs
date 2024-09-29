@@ -40,5 +40,31 @@ pub fn compute_coverage_score(labels: &Vec<f64>, x_min: f64, x_max: f64) -> f64 
 pub fn compute_density_score(labels: &Vec<f64>, preferred_nr: i32) -> f64 {
     let n = labels.len() as f64;
     let p = preferred_nr as f64;
-    return 1.0 - f64::max(n / p, p / n);
+    return 2.0 - f64::max(n / p, p / n);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn desity_score_of_preferred_count_should_be_one() {
+        let labels = vec![1.0, 2.0, 3.0];
+        let score = compute_density_score(&labels, 3);
+        assert!((score - 1.0).abs() < 1e-6);
+    }
+
+    #[test]
+    fn desity_score_of_too_few_labels_should_be_less_than_one() {
+        let labels = vec![1.0, 2.0, 3.0];
+        let score = compute_density_score(&labels, 5);
+        assert!(score < 0.9);
+    }
+
+    #[test]
+    fn desity_score_of_too_many_labels_should_be_less_than_one() {
+        let labels = vec![1.0, 2.0, 3.0];
+        let score = compute_density_score(&labels, 2);
+        assert!(score < 0.9);
+    }
 }
