@@ -13,7 +13,6 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
     // println!("DEBUG: preferred_nr_labels = {preferred_nr_labels}");
 
     let mut best_score = -2.0;
-    let mut best_labels: Vec<f64> = vec![];
     let mut best_result = String::new();
     let mut q: f64;
     let mut step_size: f64;
@@ -52,7 +51,7 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                     crate::scoring::upper_bound_on_overall_score(simplicity, coverage, density);
                 assert!(score_upper_bound <= 1.0);
                 // println!("-> score_upper_bound = {score_upper_bound}");
-                if (best_labels.len() > 0) && (score_upper_bound < best_score) {
+                if (!best_result.is_empty()) && (score_upper_bound < best_score) {
                     continue;
                 }
 
@@ -68,7 +67,6 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                 assert!(score <= 1.0);
                 // println!("-> score = {score}");
                 if score > best_score {
-                    best_labels = labels;
                     best_score = score;
                     best_result = result;
                     // println!("Found best label set! 😀 New favorite: {:?}", best_result);
@@ -76,8 +74,5 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
             }
         }
     }
-    // println!("-> Best labels: {:?}", best_labels);
-    // println!("-> Rendered as: {best_result}");
-
     return best_result;
 }
