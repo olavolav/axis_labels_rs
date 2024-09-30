@@ -39,14 +39,18 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                 // println!("\nDEBUG: Checking labels {:?} ...", labels);
 
                 let simplicity =
-                    crate::scoring::compute_simplicity_score(&labels, i, j, Q_VALUES.len());
+                    crate::scoring::compute_simplicity_score(&labels, i + 1, j, Q_VALUES.len());
+                assert!(simplicity <= 1.0);
                 let coverage = crate::scoring::compute_coverage_score(&labels, x_min, x_max);
+                assert!(coverage <= 1.0);
                 let density = crate::scoring::compute_density_score(&labels, preferred_nr_labels);
+                assert!(density <= 1.0);
                 // println!(
                 //     "-> simplicity = {simplicity}, coverage = {coverage}, density = {density}"
                 //  );
                 let score_upper_bound =
                     crate::scoring::upper_bound_on_overall_score(simplicity, coverage, density);
+                assert!(score_upper_bound <= 1.0);
                 // println!("-> score_upper_bound = {score_upper_bound}");
                 if (best_labels.len() > 0) && (score_upper_bound < best_score) {
                     continue;
@@ -58,8 +62,10 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                     crate::rendering::render(&labels, x_min, x_max, available_space);
                 // TODO Full alignment score incliding regularity
                 let grid_alignment = 1.0 - ((grid_overlap as i32) as f64);
+                assert!(grid_alignment <= 1.0);
                 let score =
                     crate::scoring::overall_score(simplicity, coverage, density, grid_alignment);
+                assert!(score <= 1.0);
                 // println!("-> score = {score}");
                 if score > best_score {
                     best_labels = labels;

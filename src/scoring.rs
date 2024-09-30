@@ -3,9 +3,10 @@ pub fn upper_bound_on_overall_score(simplicity: f64, coverage: f64, density: f64
     return overall_score(simplicity, coverage, density, 1.0);
 }
 
-/// Compute full score of labels based on properties
+/// Compute full score in [-inf,1] of labels based on properties
 pub fn overall_score(simplicity: f64, coverage: f64, density: f64, alignment: f64) -> f64 {
-    return simplicity * 0.4 + coverage * 0.25 + density * 0.3 + alignment * 0.2;
+    // Weights need to add up to 1, such that the overall best score is 1
+    return simplicity * 0.35 + coverage * 0.15 + density * 0.3 + alignment * 0.2;
 }
 
 /// Compute an estimate for the preferred number of labels.
@@ -17,11 +18,17 @@ pub fn compute_preferred_number_of_labels(available_space: i32, vertical_directi
 }
 
 /// Simplicity score according to Talbot.
+/// Note that both `i` and `j` are indices starting with 1.
 pub fn compute_simplicity_score(_labels: &Vec<f64>, i: i32, j: i32, q_len: usize) -> f64 {
+    assert!(i >= 1);
+    assert!(i <= q_len as i32);
+    assert!(j >= 1);
+    assert!(q_len > 1);
     // Indicator variable that is one if zero is part of the labels, and zero otherwise
     // NOTE It might make sense to extend this to all gridline values, plus zero
-    let v = 0.0; // TODO (any(np.isclose(labels, np.zeros(len(labels)))) as usize);
-    return 1.0 - ((i as f64) - 1.0) / ((q_len as f64) - 1.0) - (j as f64) + v;
+    // let v = 0.0; // TODO (any(np.isclose(labels, np.zeros(len(labels)))) as usize);
+    // return 1.0 - ((i as f64) - 1.0) / ((q_len as f64) - 1.0) - (j as f64) + v;
+    return 1.0 - ((i as f64) - 1.0) / ((q_len as f64) - 1.0) - ((j as f64) - 1.0);
 }
 
 /// Coverage score according to Talbot.
@@ -46,6 +53,20 @@ pub fn compute_density_score(labels: &Vec<f64>, preferred_nr: i32) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn simplicity_score_of_first_choice_labels_should_be_one() {
+        let labels = vec![1.0, 2.0, 3.0];
+        let score = compute_simplicity_score(&labels, 1, 1, 5);
+        assert!((score - 1.0).abs() < 1e-6);
+    }
+
+    #[test]
+    fn simplicity_score_of_later_choice_labels_should_be_less_than_one() {
+        let labels = vec![1.0, 2.0, 3.0];
+        let score = compute_simplicity_score(&labels, 2, 3, 5);
+        assert!(score < 0.9);
+    }
 
     #[test]
     fn coverage_score_of_full_cover_labels_should_be_one() {
