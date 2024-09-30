@@ -39,7 +39,7 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                 // println!("\nDEBUG: Checking labels {:?} ...", labels);
 
                 let simplicity =
-                    crate::scoring::compute_simplicity_score(&labels, i + 1, j, Q_VALUES.len());
+                    crate::scoring::compute_simplicity_score(&labels, i, j, Q_VALUES.len());
                 assert!(simplicity <= 1.0);
                 let coverage = crate::scoring::compute_coverage_score(&labels, x_min, x_max);
                 assert!(coverage <= 1.0);

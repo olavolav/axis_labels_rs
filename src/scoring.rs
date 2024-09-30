@@ -18,17 +18,17 @@ pub fn compute_preferred_number_of_labels(available_space: i32, vertical_directi
 }
 
 /// Simplicity score according to Talbot.
-/// Note that both `i` and `j` are indices starting with 1.
+/// `i` is the index of the nice values, starting with 0. `j` is the skip amount, starting with 1.
+/// `q_len` is the length of the list of nice values.
 pub fn compute_simplicity_score(_labels: &Vec<f64>, i: i32, j: i32, q_len: usize) -> f64 {
-    assert!(i >= 1);
-    assert!(i <= q_len as i32);
+    assert!(i < q_len as i32);
     assert!(j >= 1);
     assert!(q_len > 1);
     // Indicator variable that is one if zero is part of the labels, and zero otherwise
     // NOTE It might make sense to extend this to all gridline values, plus zero
     // let v = 0.0; // TODO (any(np.isclose(labels, np.zeros(len(labels)))) as usize);
     // return 1.0 - ((i as f64) - 1.0) / ((q_len as f64) - 1.0) - (j as f64) + v;
-    return 1.0 - ((i as f64) - 1.0) / ((q_len as f64) - 1.0) - ((j as f64) - 1.0);
+    return 1.0 - (i as f64) / ((q_len as f64) - 1.0) - ((j as f64) - 1.0);
 }
 
 /// Coverage score according to Talbot.
@@ -55,16 +55,22 @@ mod tests {
     use super::*;
 
     #[test]
+    fn preferred_label_count_smoke_tests() {
+        compute_preferred_number_of_labels(66, false);
+        compute_preferred_number_of_labels(21, true);
+    }
+
+    #[test]
     fn simplicity_score_of_first_choice_labels_should_be_one() {
         let labels = vec![1.0, 2.0, 3.0];
-        let score = compute_simplicity_score(&labels, 1, 1, 5);
+        let score = compute_simplicity_score(&labels, 0, 1, 5);
         assert!((score - 1.0).abs() < 1e-6);
     }
 
     #[test]
     fn simplicity_score_of_later_choice_labels_should_be_less_than_one() {
         let labels = vec![1.0, 2.0, 3.0];
-        let score = compute_simplicity_score(&labels, 2, 3, 5);
+        let score = compute_simplicity_score(&labels, 1, 2, 5);
         assert!(score < 0.9);
     }
 
