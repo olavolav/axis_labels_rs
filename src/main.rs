@@ -7,8 +7,6 @@ fn main() {
     let nr_runs = 150;
     let space = 60;
 
-    println!("Test: {}", 1.2345 % 0.1);
-
     for _ in 0..nr_runs {
         max *= 1.05;
         println!("{}", float_axis_labels(min, max, space));

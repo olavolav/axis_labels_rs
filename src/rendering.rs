@@ -50,7 +50,7 @@ pub fn render(labels: &Vec<f64>, x_min: f64, x_max: f64, available_space: i32) -
 /// This finds the lowest number of digits where the labels are unique. It also checks for the
 /// labels being shifted too much from the nun-rounded version, and if so adds one digit to all
 /// labels.
-/// NOTE This assumes the labels to be equidistant
+/// NOTE This assumes the labels to be equidistant.
 fn find_shortest_string_representation(labels: &Vec<f64>, max_rounding_shift: f64) -> Vec<String> {
     let mut str_labels: Vec<String> = vec![String::from(""); labels.len()];
     let mut shift_was_too_large;
