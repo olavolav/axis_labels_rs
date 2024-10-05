@@ -21,9 +21,6 @@ pub fn compute_preferred_number_of_labels(available_space: i32, vertical_directi
 /// `i` is the index of the nice values, starting with 0. `j` is the skip amount, starting with 1.
 /// `q_len` is the length of the list of nice values.
 pub fn compute_simplicity_score(_labels: &Vec<f64>, i: i32, j: i32, q_len: usize) -> f64 {
-    assert!(i < q_len as i32);
-    assert!(j >= 1);
-    assert!(q_len > 1);
     // Indicator variable that is one if zero is part of the labels, and zero otherwise
     // NOTE It might make sense to extend this to all gridline values, plus zero
 
