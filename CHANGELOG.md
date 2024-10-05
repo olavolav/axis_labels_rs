@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add an extra digit of one of the axis labels would be jumping around too much
   due to rounding.
+- Set up CI via GitHub actions.
+
+
 
 ## [0.1.0] - 2024-09-28
 
