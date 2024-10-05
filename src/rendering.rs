@@ -15,7 +15,7 @@ pub fn render(labels: &Vec<f64>, x_min: f64, x_max: f64, available_space: i32) -
         let label = labels[i];
         let mut label_len = label_strs[i].len() as i32;
         let middle_index = ((available_space as f64) * (label - x_min) / (x_max - x_min)) as i32;
-        let mut offset = middle_index - label_len;
+        let mut offset = middle_index - label_len / 2;
         if offset < 0 || (offset + label_len >= available_space) {
             found_overlap = true;
             // Does not fit, skip drawing this number

@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   due to rounding.
 - Set up CI via GitHub actions.
 
+### Fixed
+
+- Incorrect offset for longer labels.
 
 
 ## [0.1.0] - 2024-09-28
