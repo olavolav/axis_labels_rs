@@ -7,10 +7,8 @@ const Q_VALUES: [f64; 6] = [1.0, 5.0, 2.0, 2.5, 4.0, 3.0];
 
 pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String {
     let base_exponent = (x_max - x_min).log10() as i64;
-    // println!("DEBUG: base_exponent = {base_exponent}");
     let preferred_nr_labels =
         crate::scoring::compute_preferred_number_of_labels(available_space, false);
-    // println!("DEBUG: preferred_nr_labels = {preferred_nr_labels}");
 
     let mut best_score = -2.0;
     let mut best_result = String::new();
@@ -20,12 +18,10 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
         // Find closest "zero" and thus the start of the label generation
         let f = x_min / 10_f64.powf(exponent as f64 + 1.0);
         let label_start = f.floor() * 10_f64.powf(exponent as f64 + 1.0);
-        // println!("DEBUG: exponent = {exponent}, f = {f}, label_start = {label_start}");
 
         // j is the "skip amount"
         for j in 1..(MAX_SKIP_AMOUNT + 1) {
-            // i is the index of the currently selected "nice" number q for i, q in
-            // enumerate(Q_VALUES):
+            // i is the index of the currently selected "nice" number q
             for ix in 0..(Q_VALUES.len()) {
                 let i = ix as i32;
                 q = Q_VALUES[ix];
@@ -35,7 +31,6 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                     // A single label is not meaningful
                     continue;
                 }
-                // println!("\nDEBUG: Checking labels {:?} ...", labels);
 
                 let simplicity =
                     crate::scoring::compute_simplicity_score(&labels, i, j, Q_VALUES.len());
@@ -44,13 +39,9 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                 assert!(coverage <= 1.0);
                 let density = crate::scoring::compute_density_score(&labels, preferred_nr_labels);
                 assert!(density <= 1.0);
-                // println!(
-                //     "-> simplicity = {simplicity}, coverage = {coverage}, density = {density}"
-                //  );
                 let score_upper_bound =
                     crate::scoring::upper_bound_on_overall_score(simplicity, coverage, density);
                 assert!(score_upper_bound <= 1.0);
-                // println!("-> score_upper_bound = {score_upper_bound}");
                 if (!best_result.is_empty()) && (score_upper_bound < best_score) {
                     continue;
                 }
@@ -65,11 +56,9 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                 let score =
                     crate::scoring::overall_score(simplicity, coverage, density, grid_alignment);
                 assert!(score <= 1.0);
-                // println!("-> score = {score}");
                 if score > best_score {
                     best_score = score;
                     best_result = result;
-                    // println!("Found best label set! 😀 New favorite: {:?}", best_result);
                 }
             }
         }
