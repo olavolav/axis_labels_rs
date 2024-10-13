@@ -9,6 +9,6 @@ fn main() {
 
     for _ in 0..nr_runs {
         max *= 1.05;
-        println!("{}", float_axis_labels(min, max, space));
+        println!("{}", float_axis_labels(min, max, space, 1));
     }
 }

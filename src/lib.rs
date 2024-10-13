@@ -5,7 +5,12 @@ mod utils;
 const MAX_SKIP_AMOUNT: i32 = 9;
 const Q_VALUES: [f64; 6] = [1.0, 5.0, 2.0, 2.5, 4.0, 3.0];
 
-pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String {
+pub fn float_axis_labels(
+    x_min: f64,
+    x_max: f64,
+    available_space: i32,
+    padding_left: i32,
+) -> String {
     let base_exponent = (x_max - x_min).log10() as i64;
     let preferred_nr_labels =
         crate::scoring::compute_preferred_number_of_labels(available_space, false);
@@ -45,7 +50,7 @@ pub fn float_axis_labels(x_min: f64, x_max: f64, available_space: i32) -> String
                 // We may have found a new best label set, depending on the last score, which is
                 // `grid_alignment`.
                 let (result, grid_overlap) =
-                    crate::rendering::render(&labels, x_min, x_max, available_space);
+                    crate::rendering::render(&labels, x_min, x_max, available_space, padding_left);
                 // TODO Full alignment score incliding regularity
                 let grid_alignment = 1.0 - ((grid_overlap as i32) as f64);
                 let score =
