@@ -2,8 +2,8 @@ pub fn render(
     labels: &Vec<f64>,
     x_min: f64,
     x_max: f64,
-    available_space: i32,
-    padding_left: i32,
+    available_space: u32,
+    padding_left: u32,
 ) -> (String, bool) {
     // Initialize the empty string
     let mut result = String::new();
@@ -21,8 +21,8 @@ pub fn render(
         let label = labels[i];
         let mut label_len = label_strs[i].len() as i32;
         let middle_index = ((available_space as f64) * (label - x_min) / (x_max - x_min)) as i32;
-        let mut offset = middle_index - label_len / 2 + padding_left;
-        if offset < 0 || (offset + label_len >= padding_left + available_space) {
+        let mut offset = middle_index - label_len / 2 + (padding_left as i32);
+        if offset < 0 || (offset + label_len >= (padding_left + available_space) as i32) {
             found_overlap = true;
             // Does not fit, skip drawing this number
             continue;
@@ -33,7 +33,7 @@ pub fn render(
             offset -= 1;
             label_len += 1;
         }
-        if offset + label_len < available_space {
+        if offset + label_len < (available_space as i32) {
             expanded_label = expanded_label + &String::from(" ");
             label_len += 1;
         }

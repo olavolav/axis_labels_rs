@@ -8,9 +8,13 @@ const Q_VALUES: [f64; 6] = [1.0, 5.0, 2.0, 2.5, 4.0, 3.0];
 pub fn float_axis_labels(
     x_min: f64,
     x_max: f64,
-    available_space: i32,
-    padding_left: i32,
+    available_space: u32,
+    padding_left: u32,
 ) -> String {
+    if (available_space == 0) || (x_max < x_min) {
+        // TODO Return an actual `Result`.
+        return String::from("");
+    }
     let base_exponent = (x_max - x_min).log10() as i64;
     let preferred_nr_labels =
         crate::scoring::compute_preferred_number_of_labels(available_space, false);

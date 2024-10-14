@@ -10,7 +10,7 @@ pub fn overall_score(simplicity: f64, coverage: f64, density: f64, alignment: f6
 }
 
 /// Compute an estimate for the preferred number of labels.
-pub fn compute_preferred_number_of_labels(available_space: i32, vertical_direction: bool) -> i32 {
+pub fn compute_preferred_number_of_labels(available_space: u32, vertical_direction: bool) -> i32 {
     let best_spacing = if vertical_direction { 5.6 } else { 15.0 };
     let preferred_nr_labels = ((available_space as f32) / best_spacing) as i32;
 
