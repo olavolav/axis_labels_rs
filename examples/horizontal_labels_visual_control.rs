@@ -1,6 +1,12 @@
 use axis_labels_rs::float_axis_labels;
 
 /// Run a benchmark of horizontal labels
+///
+/// Run via:
+///
+/// ```
+/// $ cargo run --example horizontal_labels_visual_control
+/// ```
 fn main() {
     let min = 6.5;
     let mut max = 7.5;

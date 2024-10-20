@@ -10,6 +10,7 @@ pub fn float_axis_labels(
     x_max: f64,
     available_space: u32,
     padding_left: u32,
+    vertical_direction: bool,
     unit: &String,
 ) -> String {
     if (available_space == 0) || (x_max < x_min) {
@@ -60,6 +61,7 @@ pub fn float_axis_labels(
                     x_max,
                     available_space,
                     padding_left,
+                    vertical_direction,
                     &unit,
                 );
                 // TODO Full alignment score incliding regularity

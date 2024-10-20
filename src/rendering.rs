@@ -4,6 +4,7 @@ pub fn render(
     x_max: f64,
     available_space: u32,
     padding_left: u32,
+    vertical_direction: bool,
     unit: &String,
 ) -> (String, bool) {
     // Initialize the empty string
@@ -11,6 +12,7 @@ pub fn render(
     for _ in 0..(padding_left + available_space) {
         result.push_str(" ");
     }
+    let mut vertical_prep = vec![String::new(); available_space as usize];
     let mut found_overlap = false;
 
     // Find string labels
@@ -21,31 +23,55 @@ pub fn render(
     for i in 0..labels.len() {
         let label = labels[i];
         let complete_label_str = label_strs[i].clone() + unit;
-        let mut label_len = complete_label_str.len() as i32;
         let middle_index = ((available_space as f64) * (label - x_min) / (x_max - x_min)) as i32;
-        let mut offset = middle_index - label_len / 2 + (padding_left as i32);
-        if offset < 0 || (offset + label_len >= (padding_left + available_space) as i32) {
-            found_overlap = true;
-            // Does not fit, skip drawing this number
-            continue;
-        }
-        let mut expanded_label = complete_label_str.clone();
-        if offset > 0 {
-            expanded_label = String::from(" ") + &expanded_label;
-            offset -= 1;
-            label_len += 1;
-        }
-        if offset + label_len < (available_space as i32) {
-            expanded_label = expanded_label + &String::from(" ");
-            label_len += 1;
-        }
-        // Write label string to result
-        let range_for_writing = (offset as usize)..((offset + label_len) as usize);
-        if result[range_for_writing.clone()].trim().is_empty() {
-            result.replace_range(range_for_writing, &expanded_label);
+
+        // Rest depens on horizontal or vertical axis
+        if vertical_direction {
+            if middle_index < 0 || (middle_index >= available_space as i32) {
+                found_overlap = true;
+                // Does not fit, skip drawing this number
+                continue;
+            }
+            let prep_index = (available_space as i32 - middle_index - 1) as usize;
+            if (vertical_prep[prep_index]).trim().is_empty() {
+                vertical_prep[prep_index] = complete_label_str;
+            } else {
+                found_overlap = true;
+            }
         } else {
-            found_overlap = true;
+            let mut label_len = complete_label_str.len() as i32;
+            let mut offset = middle_index - label_len / 2 + (padding_left as i32);
+            if offset < 0 || (offset + label_len >= (padding_left + available_space) as i32) {
+                found_overlap = true;
+                // Does not fit, skip drawing this number
+                continue;
+            }
+            // We need to make sure that not only labels do not overlap, but that there is at least
+            // one space between them.
+            let mut expanded_label = complete_label_str.clone();
+            if offset > 0 {
+                expanded_label = String::from(" ") + &expanded_label;
+                offset -= 1;
+                label_len += 1;
+            }
+            if offset + label_len < (available_space as i32) {
+                expanded_label = expanded_label + &String::from(" ");
+                label_len += 1;
+            }
+            // Write label string to result
+            let range_for_writing = (offset as usize)..((offset + label_len) as usize);
+            // TODO There can be a problem here if `unit` contains spaces
+            if result[range_for_writing.clone()].trim().is_empty() {
+                result.replace_range(range_for_writing, &expanded_label);
+            } else {
+                found_overlap = true;
+            }
         }
+    }
+
+    // Harmonize output
+    if vertical_direction {
+        result = vertical_prep.join("\n");
     }
 
     return (result, found_overlap);
@@ -134,13 +160,19 @@ mod tests {
     #[test]
     fn render_smoke_test() {
         let labels = vec![1.0, 2.0, 3.0];
-        render(&labels, 0.1, 1.1, 40, 0, &String::from(""));
+        render(&labels, 0.1, 1.1, 40, 0, false, &String::from(""));
+    }
+
+    #[test]
+    fn render_smoke_test_for_vertical() {
+        let labels = vec![1.0, 2.0, 3.0];
+        render(&labels, 0.1, 1.1, 40, 0, true, &String::from(""));
     }
 
     #[test]
     fn render_test_with_padding() {
         let labels = vec![1.0, 2.0, 3.0];
-        let (string, _overlap) = render(&labels, 0.1, 1.1, 40, 10, &String::from(""));
+        let (string, _overlap) = render(&labels, 0.1, 1.1, 40, 10, false, &String::from(""));
         assert!(string[0..7].trim().is_empty());
     }
 
