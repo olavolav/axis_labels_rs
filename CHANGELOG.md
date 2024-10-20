@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   due to rounding.
 - Set up CI via GitHub actions.
 - Added `padding_left` option to add space on the lft.
+- Added `unit` option to append a string with the unit to each axis label.
 
 ### Fixed
 

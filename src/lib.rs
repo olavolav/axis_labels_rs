@@ -10,6 +10,7 @@ pub fn float_axis_labels(
     x_max: f64,
     available_space: u32,
     padding_left: u32,
+    unit: &String,
 ) -> String {
     if (available_space == 0) || (x_max < x_min) {
         // TODO Return an actual `Result`.
@@ -53,8 +54,14 @@ pub fn float_axis_labels(
 
                 // We may have found a new best label set, depending on the last score, which is
                 // `grid_alignment`.
-                let (result, grid_overlap) =
-                    crate::rendering::render(&labels, x_min, x_max, available_space, padding_left);
+                let (result, grid_overlap) = crate::rendering::render(
+                    &labels,
+                    x_min,
+                    x_max,
+                    available_space,
+                    padding_left,
+                    &unit,
+                );
                 // TODO Full alignment score incliding regularity
                 let grid_alignment = 1.0 - ((grid_overlap as i32) as f64);
                 let score =

@@ -4,6 +4,7 @@ pub fn render(
     x_max: f64,
     available_space: u32,
     padding_left: u32,
+    unit: &String,
 ) -> (String, bool) {
     // Initialize the empty string
     let mut result = String::new();
@@ -19,7 +20,8 @@ pub fn render(
     // render the individual numbers
     for i in 0..labels.len() {
         let label = labels[i];
-        let mut label_len = label_strs[i].len() as i32;
+        let complete_label_str = label_strs[i].clone() + unit;
+        let mut label_len = complete_label_str.len() as i32;
         let middle_index = ((available_space as f64) * (label - x_min) / (x_max - x_min)) as i32;
         let mut offset = middle_index - label_len / 2 + (padding_left as i32);
         if offset < 0 || (offset + label_len >= (padding_left + available_space) as i32) {
@@ -27,7 +29,7 @@ pub fn render(
             // Does not fit, skip drawing this number
             continue;
         }
-        let mut expanded_label = label_strs[i].clone();
+        let mut expanded_label = complete_label_str.clone();
         if offset > 0 {
             expanded_label = String::from(" ") + &expanded_label;
             offset -= 1;
@@ -132,13 +134,13 @@ mod tests {
     #[test]
     fn render_smoke_test() {
         let labels = vec![1.0, 2.0, 3.0];
-        render(&labels, 0.1, 1.1, 40, 0);
+        render(&labels, 0.1, 1.1, 40, 0, &String::from(""));
     }
 
     #[test]
     fn render_test_with_padding() {
         let labels = vec![1.0, 2.0, 3.0];
-        let (string, _overlap) = render(&labels, 0.1, 1.1, 40, 10);
+        let (string, _overlap) = render(&labels, 0.1, 1.1, 40, 10, &String::from(""));
         assert!(string[0..7].trim().is_empty());
     }
 
