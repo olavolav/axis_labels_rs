@@ -1,6 +1,6 @@
 [package]
 name = "axis_labels_rs"
-description = "Compute optimally readable axis labels for terminal plots."
+description = "Optimally readable axis labels for terminal plots."
 version = "0.1.0"
 authors = ["Olav Stetter <olav.stetter@googlemail.com>"]
 license = "MIT"
@@ -9,6 +9,7 @@ keywords = ["plotting", "charts", "cli"]
 categories = ["visualization", "command-line-interface"]
 readme = "README.md"
 edition = "2021"
+exclude = [".github/*"]
 
 [lib]
 name = "axis_labels_rs"
