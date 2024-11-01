@@ -122,7 +122,9 @@ fn compute_delta_to_rounded(x: f64, nr_digits: usize) -> f64 {
 }
 
 fn format_float(x: f64, nr_digits: usize) -> String {
-    let raw_number_str = format!("{0:.1$}", x, nr_digits);
+    let sign = if x >= 0.0 { "" } else { "-" };
+    let sign_str = sign.to_string();
+    let raw_number_str = format!("{0:.1$}", x.abs(), nr_digits);
 
     // Add thousands separator
     let parts = raw_number_str.split(".").collect::<Vec<&str>>();
@@ -138,10 +140,11 @@ fn format_float(x: f64, nr_digits: usize) -> String {
         .join(",");
 
     if parts.len() < 2 {
-        return integer_part_with_separators;
+        // So this is an integer
+        return sign_str + &integer_part_with_separators;
     }
     let fractional_part = parts[1];
-    return integer_part_with_separators + "." + fractional_part;
+    return sign_str + &integer_part_with_separators + "." + fractional_part;
 }
 
 fn vec_is_unique(vector: &Vec<String>) -> bool {
@@ -204,6 +207,27 @@ mod tests {
         assert_eq!(ls[0], "1");
         assert_eq!(ls[1], "2");
         assert_eq!(ls[2], "3");
+    }
+
+    #[test]
+    fn shortest_string_representation_of_large_numbers() {
+        let labels = vec![0.0, 100.0, 1000000.0];
+        let ls = find_shortest_string_representation(&labels, 2.0 / 60.0);
+        assert_eq!(ls.len(), 3);
+        assert_eq!(ls[0], "0");
+        assert_eq!(ls[1], "100");
+        assert_eq!(ls[2], "1,000,000");
+    }
+
+    #[test]
+    fn shortest_string_representation_of_large_negative_numbers() {
+        // This is issue #1.
+        let labels = vec![-10000.0, -100.0, 0.0];
+        let ls = find_shortest_string_representation(&labels, 2.0 / 60.0);
+        assert_eq!(ls.len(), 3);
+        assert_eq!(ls[0], "-10,000");
+        assert_eq!(ls[1], "-100");
+        assert_eq!(ls[2], "0");
     }
 
     #[test]
