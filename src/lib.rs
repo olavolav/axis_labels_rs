@@ -5,6 +5,7 @@ mod utils;
 const MAX_SKIP_AMOUNT: i32 = 9;
 const Q_VALUES: [f64; 6] = [1.0, 5.0, 2.0, 2.5, 4.0, 3.0];
 
+/// Generate optimally readable axis labels.
 pub fn float_axis_labels(
     x_min: f64,
     x_max: f64,
