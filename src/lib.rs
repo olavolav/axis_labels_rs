@@ -24,7 +24,7 @@ pub fn float_axis_labels(
 
     let base_exponent = (x_max - x_min).log10() as i64;
     let preferred_nr_labels =
-        crate::scoring::compute_preferred_number_of_labels(available_space, false);
+        crate::scoring::compute_preferred_number_of_labels(available_space, vertical_direction);
 
     let mut best_score = -2.0;
     let mut best_result = String::new();
