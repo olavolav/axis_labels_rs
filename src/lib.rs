@@ -13,11 +13,15 @@ pub fn float_axis_labels(
     padding_left: u32,
     vertical_direction: bool,
     unit: &String,
-) -> String {
-    if (available_space == 0) || (x_max < x_min) {
-        // TODO Return an actual `Result`.
-        return String::from("");
+) -> Result<String, String> {
+    // Check arguments
+    if available_space == 0 {
+        return Err(String::from("Invalid arguments: available_space == 0."));
     }
+    if x_max < x_min {
+        return Err(String::from("Invalid arguments: x_max < x_min."));
+    }
+
     let base_exponent = (x_max - x_min).log10() as i64;
     let preferred_nr_labels =
         crate::scoring::compute_preferred_number_of_labels(available_space, false);
@@ -76,5 +80,5 @@ pub fn float_axis_labels(
             }
         }
     }
-    return best_result;
+    return Ok(best_result);
 }

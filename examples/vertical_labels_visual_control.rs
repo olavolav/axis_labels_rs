@@ -18,7 +18,7 @@ fn main() {
         max *= 1.05;
         let labels = float_axis_labels(min, max, space, 1, true, &unit);
         println!("┐");
-        for line in labels.split("\n") {
+        for line in labels.unwrap().split("\n") {
             println!("│ {line}");
         }
         println!("┘");

@@ -11,6 +11,6 @@ fn main() {
     for _ in 0..nr_runs {
         max *= 1.05;
         let labels = float_axis_labels(min, max, space, 1, false, &unit);
-        println!("{}", labels);
+        println!("{}", labels.unwrap());
     }
 }
