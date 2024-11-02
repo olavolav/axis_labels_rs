@@ -1,7 +1,7 @@
 [package]
 name = "axis_labels_rs"
 description = "Optimally readable axis labels for terminal plots."
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Olav Stetter <olav.stetter@googlemail.com>"]
 license = "MIT"
 repository = "https://github.com/olavolav/axis_labels_rs"
