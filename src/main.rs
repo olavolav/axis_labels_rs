@@ -1,4 +1,5 @@
 use axis_labels_rs::float_axis_labels;
+use axis_labels_rs::AxisLabels;
 
 /// Run a benchmark of horizontal labels
 fn main() {
@@ -13,4 +14,8 @@ fn main() {
         let labels = float_axis_labels(min, max, space, 1, false, &unit);
         println!("{}", labels.unwrap());
     }
+
+    println!("New interface:");
+    let a = AxisLabels::new(0.0, 1.1, 60, false);
+    println!("{}", a.render().unwrap());
 }
