@@ -1,4 +1,4 @@
-use axis_labels_rs::float_axis_labels;
+use axis_labels_rs::AxisLabels;
 
 /// Run a benchmark of horizontal labels
 ///
@@ -12,11 +12,10 @@ fn main() {
     let mut max = 7.5;
     let nr_runs = 150;
     let space = 60;
-    let unit = String::from("");
 
     for _ in 0..nr_runs {
         max *= 1.05;
-        let labels = float_axis_labels(min, max, space, 1, false, &unit);
-        println!("{}", labels.unwrap());
+        let labels  = AxisLabels::new(min, max, space, false);
+        println!("{}", labels.render().unwrap());
     }
 }
