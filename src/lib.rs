@@ -1,4 +1,5 @@
 mod float_range;
+use float_range::float_axis_labels;
 
 
 pub struct AxisLabels<T: PartialOrd>{
@@ -41,6 +42,6 @@ impl<T: PartialOrd> AxisLabels<T> {
 
 impl AxisLabels<f64> {
     pub fn render(&self) -> Result<String, String> {
-        return crate::float_range::float_axis_labels(self.x_min, self.x_max, self.available_space, self.padding_left, self.vertical_direction, &self.unit);
+        return float_axis_labels(self.x_min, self.x_max, self.available_space, self.padding_left, self.vertical_direction, &self.unit);
     }
 }
