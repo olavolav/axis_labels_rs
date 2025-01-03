@@ -1,8 +1,12 @@
+use chrono::DateTime;
+use chrono::Local;
+
+mod datetime_range;
 mod float_range;
+use datetime_range::datetime_axis_labels;
 use float_range::float_axis_labels;
 
-
-pub struct AxisLabels<T: PartialOrd>{
+pub struct AxisLabels<T: PartialOrd> {
     x_min: T,
     x_max: T,
     available_space: u32,
@@ -27,8 +31,8 @@ impl<T: PartialOrd> AxisLabels<T> {
             available_space,
             padding_left: 0,
             vertical_direction,
-            unit: String::from("")
-        }
+            unit: String::from(""),
+        };
     }
 
     pub fn with_unit(&mut self, unit: String) {
@@ -42,6 +46,26 @@ impl<T: PartialOrd> AxisLabels<T> {
 
 impl AxisLabels<f64> {
     pub fn render(&self) -> Result<String, String> {
-        return float_axis_labels(self.x_min, self.x_max, self.available_space, self.padding_left, self.vertical_direction, &self.unit);
+        return float_axis_labels(
+            self.x_min,
+            self.x_max,
+            self.available_space,
+            self.padding_left,
+            self.vertical_direction,
+            &self.unit,
+        );
+    }
+}
+
+impl AxisLabels<DateTime<Local>> {
+    pub fn render(&self) -> Result<String, String> {
+        return datetime_axis_labels(
+            self.x_min,
+            self.x_max,
+            self.available_space,
+            self.padding_left,
+            self.vertical_direction,
+            &self.unit,
+        );
     }
 }

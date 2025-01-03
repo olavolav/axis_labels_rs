@@ -15,7 +15,7 @@ fn main() {
 
     for _ in 0..nr_runs {
         max *= 1.05;
-        let labels  = AxisLabels::new(min, max, space, false);
+        let labels = AxisLabels::new(min, max, space, false);
         println!("{}", labels.render().unwrap());
     }
 }

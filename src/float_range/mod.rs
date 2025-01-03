@@ -23,8 +23,10 @@ pub fn float_axis_labels(
     }
 
     let base_exponent = (x_max - x_min).log10() as i64;
-    let preferred_nr_labels =
-        crate::float_range::scoring::compute_preferred_number_of_labels(available_space, vertical_direction);
+    let preferred_nr_labels = crate::float_range::scoring::compute_preferred_number_of_labels(
+        available_space,
+        vertical_direction,
+    );
 
     let mut best_score = -2.0;
     let mut best_result = String::new();
@@ -40,17 +42,25 @@ pub fn float_axis_labels(
             for (ix, q) in Q_VALUES.iter().enumerate() {
                 let i = ix as i32;
                 step_size = q * (j as f64) * 10_f64.powf(exponent as f64);
-                let labels = crate::float_range::utils::linspace(label_start, x_min, x_max, step_size);
+                let labels =
+                    crate::float_range::utils::linspace(label_start, x_min, x_max, step_size);
                 if labels.len() < 2 {
                     // A single label is not meaningful
                     continue;
                 }
 
-                let simplicity_score =
-                    crate::float_range::scoring::compute_simplicity_score(&labels, i, j, Q_VALUES.len());
-                let coverage_score = crate::float_range::scoring::compute_coverage_score(&labels, x_min, x_max);
-                let density_score =
-                    crate::float_range::scoring::compute_density_score(&labels, preferred_nr_labels);
+                let simplicity_score = crate::float_range::scoring::compute_simplicity_score(
+                    &labels,
+                    i,
+                    j,
+                    Q_VALUES.len(),
+                );
+                let coverage_score =
+                    crate::float_range::scoring::compute_coverage_score(&labels, x_min, x_max);
+                let density_score = crate::float_range::scoring::compute_density_score(
+                    &labels,
+                    preferred_nr_labels,
+                );
                 let score_upper_bound = crate::float_range::scoring::upper_bound_on_overall_score(
                     simplicity_score,
                     coverage_score,
