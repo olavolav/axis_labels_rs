@@ -13,12 +13,12 @@ labels is done by testing & scoring a large number of possible labels.
 ## Example
 
 ```rust
-use axis_labels_rs::float_axis_labels;
+use axis_labels_rs::AxisLabels;
 
-let labels = float_axis_labels(0.0, 123.4, 60, 1, false, &String::from(" m"));
-println!("{}", labels);
+let labels = AxisLabels::new(1.0, 123.4, 60, false).render();
+println!("{}", labels.unwrap());
 ```
-yields
+yields readable axis labels:
 ```
-0 m                    50 m                    100 m
+          25           50          75          100
 ```

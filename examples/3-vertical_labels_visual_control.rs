@@ -5,7 +5,7 @@ use axis_labels_rs::AxisLabels;
 /// Run via:
 ///
 /// ```
-/// $ cargo run --example vertical_labels_visual_control
+/// $ cargo run --example 3-vertical_labels_visual_control
 /// ```
 fn main() {
     let min = 6.5;
