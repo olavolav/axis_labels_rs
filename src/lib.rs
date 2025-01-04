@@ -1,9 +1,9 @@
-use chrono::DateTime;
-use chrono::Local;
+// use chrono::DateTime;
+// use chrono::Local;
 
-mod datetime_range;
+// mod datetime_range;
 mod float_range;
-use datetime_range::datetime_axis_labels;
+// use datetime_range::datetime_axis_labels;
 use float_range::float_axis_labels;
 
 pub struct AxisLabels<T: PartialOrd> {
@@ -25,22 +25,38 @@ impl<T: PartialOrd> AxisLabels<T> {
             panic!("Invalid arguments: x_max < x_min.");
         }
 
-        return Self {
+        Self {
             x_min,
             x_max,
             available_space,
             padding_left: 0,
             vertical_direction,
             unit: String::from(""),
-        };
+        }
     }
 
-    pub fn with_unit(&mut self, unit: String) {
-        self.unit = unit;
+    /// Builder for advanced option `unit`
+    pub fn with_unit(self, unit: String) -> Self {
+        Self {
+            x_min: self.x_min,
+            x_max: self.x_max,
+            available_space: self.available_space,
+            padding_left: self.padding_left,
+            vertical_direction: self.vertical_direction,
+            unit
+        }
     }
 
-    pub fn with_padding_left(&mut self, padding_left: u32) {
-        self.padding_left = padding_left;
+    /// Builder for advanced option `padding_left`
+    pub fn with_padding_left(self, padding_left: u32) -> Self {
+        Self {
+            x_min: self.x_min,
+            x_max: self.x_max,
+            available_space: self.available_space,
+            padding_left,
+            vertical_direction: self.vertical_direction,
+            unit: self.unit
+        }
     }
 }
 
@@ -57,7 +73,7 @@ impl AxisLabels<f64> {
     }
 }
 
-impl AxisLabels<DateTime<Local>> {
+/* impl AxisLabels<DateTime<Local>> {
     pub fn render(&self) -> Result<String, String> {
         return datetime_axis_labels(
             self.x_min,
@@ -68,4 +84,4 @@ impl AxisLabels<DateTime<Local>> {
             &self.unit,
         );
     }
-}
+} */
